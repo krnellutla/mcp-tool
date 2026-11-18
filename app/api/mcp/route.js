@@ -128,12 +128,16 @@ async function askGroq(messages, tools) {
   return data.choices[0].message;
 }
 
+function filterTools(tools) {
+  return (tools || []).filter((t) => t.name !== "get_lecture");
+}
+
 export async function GET() {
   try {
     const result = await callMcpRpc("tools/list");
     return NextResponse.json({
       mcpUrl: MCP_URL,
-      tools: result.tools || [],
+      tools: filterTools(result.tools),
     });
   } catch (error) {
     return NextResponse.json(
@@ -161,8 +165,7 @@ export async function POST(request) {
       if (!process.env.GROQ_API_KEY) {
         return NextResponse.json(
           {
-            error:
-              "GROQ_API_KEY is not set. Add GROQ_API_KEY in .env (local) or Vercel Environment Variables, or use the Direct MCP Tool Caller.",
+            error: "GROQ_API_KEY is not configured on the server yet.",
           },
           { status: 400 }
         );
@@ -174,7 +177,7 @@ export async function POST(request) {
       }
 
       const listResult = await callMcpRpc("tools/list");
-      const cards = (listResult.tools || []).map((tool) => ({
+      const cards = filterTools(listResult.tools).map((tool) => ({
         type: "function",
         function: {
           name: tool.name,

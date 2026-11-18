@@ -18,6 +18,7 @@ body {
 }
 
 .hero-inner {
+  inline-size: 100%;
   max-inline-size: 1200px;
   margin-inline: auto;
   padding-inline: 1.25rem;
@@ -129,6 +130,7 @@ body {
 
 /* Split 2-Column Workspace (Left: Answering, Right: MCP Output) */
 .workspace-grid {
+  inline-size: 100%;
   max-inline-size: 1200px;
   margin-inline: auto;
   padding-inline: 1.25rem;
@@ -137,18 +139,28 @@ body {
   grid-template-columns: 1fr;
   gap: 1.5rem;
   align-items: start;
+  transition: max-inline-size 0.25s ease;
+}
+
+.workspace-grid.has-output {
+  max-inline-size: 1400px;
 }
 
 .pane-left,
 .pane-right {
   min-inline-size: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
 }
 
 @media (min-width: 900px) {
   .workspace-grid {
-    grid-template-columns: minmax(360px, 5fr) minmax(400px, 7fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .workspace-grid.has-output {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
   }
 
   .pane-right {
@@ -158,6 +170,9 @@ body {
 }
 
 .panel {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
@@ -340,11 +355,15 @@ summary:focus-visible {
 
 .results-grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   margin-block-start: 1rem;
 }
 
 .result-card {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 1rem;
@@ -382,6 +401,9 @@ pre {
   border-radius: 8px;
   background: #0f172a;
   color: #f8fafc;
+  max-inline-size: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   overflow-x: auto;
   font-size: 0.875rem;
   max-block-size: 360px;
@@ -395,6 +417,7 @@ pre {
 }
 
 .page-footer {
+  inline-size: 100%;
   max-inline-size: 1200px;
   margin-inline: auto;
   padding-inline: 1.25rem;

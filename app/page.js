@@ -245,7 +245,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="workspace-grid">
+      <main className={activeOutput ? "workspace-grid has-output" : "workspace-grid"}>
         {/* LEFT COLUMN: Answering & Query Pane */}
         <div className="pane-left">
           <section className="panel" aria-labelledby="ai-assistant-heading">
@@ -277,12 +277,8 @@ export default function HomePage() {
                     type="text"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    aria-describedby="ai-question-help"
                     required
                   />
-                  <span id="ai-question-help" className="hint">
-                    Requires GROQ_API_KEY in .env (local) or Vercel Environment Variables.
-                  </span>
                 </div>
 
                 <button type="submit" disabled={aiLoading}>
