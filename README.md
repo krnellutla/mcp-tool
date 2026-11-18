@@ -232,13 +232,13 @@ Do it once more with data you care about: your own Google Sheet, a CSV file, a S
 2. Write its card, and five questions of your own for the table in step 6.
 3. Push, and call your new tool at the deployed address.
 
-| Question (`get_book` / `books.csv`) | Should it ask for the tool? | Did it? |
+| Question (Netflix & 2026 Trending Movies) | Should it ask for the tool? | Did it? |
 |---|---|---|
-| What is book 2 on my reading list, and have I finished it? | Yes | Yes |
-| Who is the author of the fourth book on my reading list? | Yes | Yes |
-| What is a CSV file? | No | No |
-| What topic is book 5 on my reading list about? | Yes | Yes |
-| Who wrote Harry Potter and the Sorcerer's Stone? | No | No |
+| What is the Netflix show Blood & Water about? | Yes | Yes |
+| What is the release date and vote average of Project Hail Mary in the 2026 trending movies dataset? | Yes | Yes |
+| Show me the top 3 trending movies of 2026. | Yes | Yes |
+| What is a JSON file? | No | No |
+| Who directed The Dark Knight in 2008? | No | No |
 
 ## Submit it
 
