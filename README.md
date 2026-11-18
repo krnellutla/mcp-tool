@@ -137,11 +137,11 @@ The model reads only the card. First fill in the middle column. Then run each qu
 
 | Question | Should it ask for the tool? | Did it? |
 |---|---|---|
-| When is Lecture 12 of 100xEngineers Cohort 8, and what is it about? | | |
-| Which tools do we use in the seventh class? | | |
-| What is an API? | | |
-| Is session ten a combined one or separate? | | |
-| In lecture 3 of Harvard CS50, which language is taught? | | |
+| When is Lecture 12 of 100xEngineers Cohort 8, and what is it about? | Yes | Yes |
+| Which tools do we use in the seventh class? | Yes | Yes |
+| What is an API? | No | No |
+| Is session ten a combined one or separate? | Yes | Yes |
+| In lecture 3 of Harvard CS50, which language is taught? | No | No |
 
 ```bash
 python tool_call.py "Which tools do we use in the seventh class?"
@@ -231,6 +231,14 @@ Do it once more with data you care about: your own Google Sheet, a CSV file, a S
 1. Write your own function next to `get_lecture`, in both files.
 2. Write its card, and five questions of your own for the table in step 6.
 3. Push, and call your new tool at the deployed address.
+
+| Question (`get_book` / `books.csv`) | Should it ask for the tool? | Did it? |
+|---|---|---|
+| What is book 2 on my reading list, and have I finished it? | Yes | Yes |
+| Who is the author of the fourth book on my reading list? | Yes | Yes |
+| What is a CSV file? | No | No |
+| What topic is book 5 on my reading list about? | Yes | Yes |
+| Who wrote Harry Potter and the Sorcerer's Stone? | No | No |
 
 ## Submit it
 

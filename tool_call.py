@@ -18,6 +18,12 @@ def get_lecture(number):
             return {"date": row[0], "title": row[1], "type": row[2], "tools": row[3]}
     return {"error": f"There is no lecture {number}. Lectures run from 1 to 19."}
 
+def get_book(number):
+    for row in csv.reader(open("books.csv")):
+        if row[0] == str(number):
+            return {"number": row[0], "title": row[1], "author": row[2], "topic": row[3], "status": row[4]}
+    return {"error": f"There is no book {number}. Books run from 1 to 5."}
+
 # ---------- THE MODEL (given) ----------
 # One message to Groq, one message back. Nothing is added that you do not send.
 def ask_model(messages, tools=None):
@@ -38,18 +44,36 @@ messages = [{"role": "user", "content": question}]
 # Step 2. The card: fill in the two empty strings.
 card = {"type": "function", "function": {
     "name": "get_lecture",
-    "description": "",                                                    # Use it when
+    "description": "Get the date, title, type, and tools for a lecture, class, or session of the 100xEngineers Cohort 8 course (from 1 to 19). Only use this for 100xEngineers Cohort 8 lectures.",  # Use it when
     "parameters": {"type": "object",
                    "properties": {"number": {"type": "integer",
-                                             "description": ""}},         # It needs
+                                             "description": "The lecture or session number, from 1 to 19."}},  # It needs
                    "required": ["number"]},
 }}
 
-reply = ask_model(messages)                 # Step 2: send the card too
-print(json.dumps(reply, indent=2, ensure_ascii=False))
+book_card = {"type": "function", "function": {
+    "name": "get_book",
+    "description": "Get the title, author, topic, and reading status of a book from my personal reading list by its book number (1 to 5).",
+    "parameters": {"type": "object",
+                   "properties": {"number": {"type": "integer",
+                                             "description": "The book number on my reading list, from 1 to 5."}},
+                   "required": ["number"]},
+}}
 
-# Step 3. Run the request the model wrote.
+reply = ask_model(messages, [card, book_card])
 
-# Step 4. Hand the result back to the model and print its answer.
+# Step 3, 4, 5. Loop while the model asks for a tool, run it, and hand the result back.
+while reply.get("tool_calls"):
+    messages.append(reply)
+    for call in reply["tool_calls"]:
+        name = call["function"]["name"]
+        args = json.loads(call["function"]["arguments"])
+        print("The model asked for:", name, args)
+        if name == "get_lecture":
+            result = get_lecture(**args)
+        elif name == "get_book":
+            result = get_book(**args)
+        messages.append({"role": "tool", "tool_call_id": call["id"], "content": json.dumps(result)})
+    reply = ask_model(messages, [card, book_card])
 
-# Step 5. Turn steps 3 and 4 into a loop.
+print("\n" + reply["content"])
