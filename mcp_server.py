@@ -1,22 +1,9 @@
-"""Part 2: the same tool on the sheet's side, as an MCP server.  Run: python mcp_server.py
-The steps are in README.md."""
-import csv, io, socket
+"""MCP server exposing Netflix titles and 2026 trending movies tools. Run: python mcp_server.py"""
+import csv, socket
 from typing import Annotated
-import requests
 from fastmcp import FastMCP
 
-SHEET = "https://docs.google.com/spreadsheets/d/1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM/gviz/tq?tqx=out:csv&headers=0&gid=368290478"
-
-mcp = FastMCP("100x curriculum")
-
-# Step 1 & 2. Move get_lecture here from tool_call.py, put @mcp.tool above it, and add docstring and type hint.
-@mcp.tool
-def get_lecture(number: Annotated[int, "The lecture or session number, from 1 to 19."]) -> dict:
-    """Get the date, title, type, and tools for a lecture, class, or session of the 100xEngineers Cohort 8 course (from 1 to 19). Only use this for 100xEngineers Cohort 8 lectures."""
-    for row in csv.reader(io.StringIO(requests.get(SHEET).text)):
-        if row[1].startswith(f"{number}. "):
-            return {"date": row[0], "title": row[1], "type": row[2], "tools": row[3]}
-    return {"error": f"There is no lecture {number}. Lectures run from 1 to 19."}
+mcp = FastMCP("Netflix and Trending Movies")
 
 @mcp.tool
 def get_netflix_show(title: Annotated[str, "Part or all of the Netflix movie or TV show title to look up."]) -> dict:

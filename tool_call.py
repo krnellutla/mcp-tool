@@ -1,6 +1,5 @@
-"""Part 1: your first tool call.  Run: python tool_call.py
-The steps are in README.md. Each one adds a few lines to the bottom of this file."""
-import csv, io, json, os, sys
+"""Tool calling script for Netflix titles and 2026 trending movies. Run: python tool_call.py"""
+import csv, json, os, sys
 import requests
 from dotenv import load_dotenv
 
@@ -8,15 +7,7 @@ load_dotenv()
 if not os.environ.get("GROQ_API_KEY"):
     raise SystemExit("No GROQ_API_KEY found. Make a file called .env next to tool_call.py with one line: GROQ_API_KEY=your key")
 
-# ---------- THE SHEET (given) ----------
-# Plain code, no model: one lecture of the course sheet, looked up by its number.
-SHEET = "https://docs.google.com/spreadsheets/d/1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM/gviz/tq?tqx=out:csv&headers=0&gid=368290478"
-
-def get_lecture(number):
-    for row in csv.reader(io.StringIO(requests.get(SHEET).text)):
-        if row[1].startswith(f"{number}. "):
-            return {"date": row[0], "title": row[1], "type": row[2], "tools": row[3]}
-    return {"error": f"There is no lecture {number}. Lectures run from 1 to 19."}
+# ---------- THE DATASETS (local CSV files) ----------
 
 def get_netflix_show(title):
     matches = []
@@ -97,21 +88,11 @@ def ask_model(messages, tools=None):
     r.raise_for_status()
     return r.json()["choices"][0]["message"]
 
-# ---------- YOUR SERVER (yours to write) ----------
+# ---------- YOUR TOOL CALLING LOOP ----------
 # python tool_call.py                      asks the question below
 # python tool_call.py "What is an API?"    asks your own
-question = " ".join(sys.argv[1:]) or "When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?"
+question = " ".join(sys.argv[1:]) or "What is the Netflix show Blood & Water about?"
 messages = [{"role": "user", "content": question}]
-
-# Step 2. The card: fill in the two empty strings.
-card = {"type": "function", "function": {
-    "name": "get_lecture",
-    "description": "Get the date, title, type, and tools for a lecture, class, or session of the 100xEngineers Cohort 8 course (from 1 to 19). Only use this for 100xEngineers Cohort 8 lectures.",  # Use it when
-    "parameters": {"type": "object",
-                   "properties": {"number": {"type": "integer",
-                                             "description": "The lecture or session number, from 1 to 19."}},  # It needs
-                   "required": ["number"]},
-}}
 
 netflix_card = {"type": "function", "function": {
     "name": "get_netflix_show",
@@ -140,19 +121,17 @@ top_trending_card = {"type": "function", "function": {
                    "required": ["count"]},
 }}
 
-all_cards = [card, netflix_card, trending_card, top_trending_card]
+all_cards = [netflix_card, trending_card, top_trending_card]
 reply = ask_model(messages, all_cards)
 
-# Step 3, 4, 5. Loop while the model asks for a tool, run it, and hand the result back.
+# Loop while the model asks for a tool, run it, and hand the result back.
 while reply.get("tool_calls"):
     messages.append(reply)
     for call in reply["tool_calls"]:
         name = call["function"]["name"]
         args = json.loads(call["function"]["arguments"])
         print("The model asked for:", name, args)
-        if name == "get_lecture":
-            result = get_lecture(**args)
-        elif name == "get_netflix_show":
+        if name == "get_netflix_show":
             result = get_netflix_show(**args)
         elif name == "get_trending_movie":
             result = get_trending_movie(**args)

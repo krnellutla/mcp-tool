@@ -27,14 +27,6 @@ const TOOL_CONFIG = {
     inputType: "number",
     defaultValue: "5",
   },
-  get_lecture: {
-    label: "Course Lectures",
-    fieldLabel: "Lecture number (1 to 19)",
-    helper: "Enter a lecture number from 1 to 19.",
-    inputName: "number",
-    inputType: "number",
-    defaultValue: "12",
-  },
 };
 
 const HERO_DATASETS = [
@@ -46,18 +38,18 @@ const HERO_DATASETS = [
     question: "What is the Netflix show Blood & Water about?",
   },
   {
-    title: "2026 Trending Movies",
-    meta: "Treanding_movies_26.csv · Rank, ratings & overview",
+    title: "Search 2026 Movies",
+    meta: "Treanding_movies_26.csv · Search any 2026 movie",
+    tool: "get_trending_movie",
+    value: "Project Hail Mary",
+    question: "What is the release date and vote average of Project Hail Mary?",
+  },
+  {
+    title: "Top 2026 Trending",
+    meta: "Treanding_movies_26.csv · Ranked by popularity",
     tool: "get_top_trending_movies",
     value: "3",
     question: "Show me the top 3 trending movies of 2026.",
-  },
-  {
-    title: "100x Cohort 8 Lectures",
-    meta: "Course schedule · Lectures 1 to 19",
-    tool: "get_lecture",
-    value: "12",
-    question: "When is Lecture 12 of 100xEngineers Cohort 8?",
   },
 ];
 
@@ -65,7 +57,7 @@ const SAMPLE_QUESTIONS = [
   "What is the Netflix show Blood & Water about?",
   "What is the release date and vote average of Project Hail Mary?",
   "Show me the top 3 trending movies of 2026.",
-  "When is Lecture 12 of 100xEngineers Cohort 8?",
+  "Who directed the Netflix movie Dick Johnson Is Dead and what is its duration?",
 ];
 
 export default function HomePage() {
@@ -208,7 +200,7 @@ export default function HomePage() {
       <header className="hero-banner">
         <div className="hero-inner">
           <div className="hero-top-row">
-            <span className="hero-eyebrow">100xEngineers · FastMCP Workspace</span>
+            <span className="hero-eyebrow">Movies &amp; Shows · FastMCP Workspace</span>
             <div className="status-badge" role="status">
               <span
                 className={
@@ -231,7 +223,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <h1>Movie &amp; Course MCP Explorer</h1>
+          <h1>Netflix &amp; 2026 Movies MCP Explorer</h1>
           <p className="hero-subtitle">
             Ask questions or run tools on the left to read answers, and inspect live structured
             MCP data cards and JSON payloads on the right. Click any dataset below to try it now:
@@ -353,13 +345,7 @@ export default function HomePage() {
                     name={activeConfig.inputName}
                     type={activeConfig.inputType}
                     min={activeConfig.inputType === "number" ? 1 : undefined}
-                    max={
-                      selectedTool === "get_top_trending_movies"
-                        ? 10
-                        : selectedTool === "get_lecture"
-                        ? 19
-                        : undefined
-                    }
+                    max={selectedTool === "get_top_trending_movies" ? 10 : undefined}
                     value={toolInput}
                     onChange={(e) => setToolInput(e.target.value)}
                     aria-describedby="tool-arg-help"
@@ -465,16 +451,6 @@ export default function HomePage() {
                             <p>{movie.overview}</p>
                           </article>
                         ))}
-
-                      {payload.date && (
-                        <article className="result-card">
-                          <h3>{payload.title}</h3>
-                          <p className="meta-line">
-                            Date: {payload.date} · Type: {payload.type}
-                          </p>
-                          <p>Tools: {payload.tools}</p>
-                        </article>
-                      )}
 
                       <div className="code-wrap">
                         <div className="code-label" id={`raw-mcp-json-label-${groupIdx}`}>
