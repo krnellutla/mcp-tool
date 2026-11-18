@@ -242,8 +242,8 @@ Do it once more with data you care about: your own Google Sheet, a CSV file, a S
 
 ## Submit it
 
-- The link to your fork, with the step 6 table filled in.
-- Your deployed address.
+- The link to your fork, with the step 6 table filled in: https://github.com/krnellutla/mcp-tool
+- Your deployed address: https://tinkeryard.fastmcp.app/mcp
 
 Once you're done, submit it on the LMS. We go through them in the office hour.
 
